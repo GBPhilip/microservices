@@ -3,9 +3,12 @@
 using ECommerce.Api.Products.Db;
 using ECommerce.Api.Products.Interfaces;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.Api.Products.Providers
@@ -36,9 +39,53 @@ namespace ECommerce.Api.Products.Providers
             }
         }
 
-        public Task<(bool IsSuccess, IEnumerable<Models.Product> products, string ErrorMessage)> GetProductsAsync()
+        public async Task<(bool IsSuccess, IEnumerable<Models.Product> Products,
+            string ErrorMessage)> GetProductsAsync()
         {
+            try
+            {
+                var products = await dbContext.Products.ToListAsync();
+                if (products != null && products.Any())
+                {
+                    var result = mapper.Map<IEnumerable<Product>, IEnumerable<Models.Product>>(products);
+                    return (true, result, null);
+                }
+                else
+                {
+                    return (false, null, "Not found");
 
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex.ToString());
+                return (false, null, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<(bool IsSuccess, Models.Product Product, string ErrorMessage)> GetProductAsync(int id)
+        {
+            try
+            {
+                var product = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+                if (product != null)
+                {
+                    var result = mapper.Map<Product, Models.Product>(product);
+                    return (true, result, null);
+                }
+                else
+                {
+                    return (false, null, "Not found");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex.ToString());
+                return (false, null, ex.Message);
+                throw;
+            }
         }
     }
 }
