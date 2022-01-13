@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System.Threading.Tasks;
 
-namespace ECommerce.Api.Products.Providers
+namespace ECommerce.Api.Products.Controllers
 {
     [ApiController]
     [Route("api/products")]
