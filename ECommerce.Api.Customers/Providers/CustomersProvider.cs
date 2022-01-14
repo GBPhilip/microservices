@@ -31,10 +31,9 @@ namespace ECommerce.Api.Customers.Providers
         {
             if (!dbContext.Customers.Any())
             {
-                dbContext.Customers.Add(new Customer() { Id = 1, Name = "Smith", });
-                dbContext.Customers.Add(new Customer() { Id = 2, Name = "Jones", });
-                dbContext.Customers.Add(new Customer() { Id = 3, Name = "Patel", });
-                dbContext.Customers.Add(new Customer() { Id = 4, Name = "Singh", });
+                dbContext.Customers.Add(new Customer() { Id = 1, Name = "Jessica Smith", Address="20 Elm St." });
+                dbContext.Customers.Add(new Customer() { Id = 2, Name = "John Smith", Address="30 Main St."});
+                dbContext.Customers.Add(new Customer() { Id = 3, Name = "William Johnson", Address= "100 10th St." });
                 dbContext.SaveChanges();
             }
         }
@@ -44,9 +43,11 @@ namespace ECommerce.Api.Customers.Providers
         {
             try
             {
+                logger?.LogInformation("Querying customers");
                 var customers = await dbContext.Customers.ToListAsync();
                 if (customers != null && customers.Any())
                 {
+                    logger?.LogInformation($"{customers.Count} customer(s) found");
                     var result = mapper.Map<IEnumerable<Db.Customer>, IEnumerable<Models.Customer>>(customers);
                     return (true, result, null);
                 }
@@ -70,9 +71,11 @@ namespace ECommerce.Api.Customers.Providers
         {
             try
             {
+                logger?.LogInformation("Querying customers");
                 var customer = await dbContext.Customers.FirstOrDefaultAsync(p => p.Id == id);
                 if (customer != null)
                 {
+                    logger?.LogInformation("Customer found");
                     var result = mapper.Map<Db.Customer, Models.Customer>(customer);
                     return (true, result, null);
                 }
