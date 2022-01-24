@@ -31,7 +31,7 @@ namespace ECommerce.Api.Search.Services
                 {
                     var content = await response.Content.ReadAsByteArrayAsync();
                     var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                    var result = JsonSerializer.Deserialize<IEnumerable<Order>>(content);
+                    var result = JsonSerializer.Deserialize<IEnumerable<Order>>(content, options);
                     return (true, result, null);
                 }
                 return (false, null, response.ReasonPhrase);
